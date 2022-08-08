@@ -1,0 +1,23 @@
+#!/bin/sh
+
+DEVICE_NAME=/dev/sdb
+PART_NAME="${DEVICE_NAME}1"
+
+usb_not_found() {
+	echo "Can't find device: ${DEVICE_NAME}"
+	exit 1
+}
+
+[ -b ${DEVICE_NAME} ] || usb_not_found 
+
+sudo dd if=/dev/zero of=${DEVICE_NAME} bs=1M status=progress count=10
+sync
+sudo eject ${DEVICE_NAME}
+
+read -p "Reinsert USB stick..." tmp_var
+sleep 10
+
+[ -b ${DEVICE_NAME} ] || usb_not_found 
+
+sudo parted ${DEVICE_NAME} mklabel msdos mkpart primary ntfs 1MB 100%
+sudo mkfs.ntfs -QI ${PART_NAME} 

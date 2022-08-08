@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/usr/bin/mpv -vo null --term-osd-bar --term-osd=force --term-osd-bar-chars='[.#.]' "$@"

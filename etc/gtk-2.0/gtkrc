@@ -1,0 +1,11 @@
+gtk-theme-name = "Adwaita-dark"
+gtk-icon-theme-name = "Papirus-Dark"
+gtk-font-name = "Segoe UI 18"
+gtk-button-images = 0
+gtk-menu-images = 0
+gtk-enable-event-sounds = 0
+gtk-enable-input-feedback-sounds = 0
+gtk-toolbar-style = GTK_TOOLBAR_TEXT
+gtk-cursor-theme-name = breeze_cursors
+gtk-menu-popup-delay = 0
+

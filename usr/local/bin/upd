@@ -1,0 +1,12 @@
+#!/bin/sh
+
+sudo eatmydata -- dpkg --configure -a
+sudo eatmydata -- apt update
+sudo eatmydata -- apt-get -f install
+sudo eatmydata -- apt full-upgrade -y
+sudo eatmydata -- apt clean
+sudo eatmydata -- apt autoremove --purge
+
+echo
+echo ":: orphaned packages ::"
+deborphan --guess-all
