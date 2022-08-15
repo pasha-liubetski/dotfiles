@@ -119,6 +119,10 @@ fvi () {
     vi "$(fd --type f | fzf)"
 }
 
+fmnt () {
+    cd "$(findmnt -D -o TARGET | tail -n +2 | sort | uniq | fzf)"
+}
+
 # Aliases
 
 alias rscopy="rsync --human-readable --progress --recursive --links --hard-links --perms --acls --xattrs --owner --group --protect-args"
@@ -152,8 +156,8 @@ alias a2="aria2c"
 
 alias se="sudoedit"
 
-alias add="sudo eatmydata -- apt install"
-alias del="sudo eatmydata -- apt purge"
+alias add="sudo nice -n 7 eatmydata -- apt install"
+alias del="sudo nice -n 7 eatmydata -- apt purge"
 alias show="apt show"
 alias search="apt search"
 
@@ -182,12 +186,12 @@ alias vpnoff="warp-cli disconnect"
 
 alias g="/usr/local/bin/nohupgeany.sh"
 
-alias gc="git clone"
 alias cx="chmod +x"
 alias md="mkdir"
 
 alias gia="git add -A"
 alias gcm="git commit"
+alias gc="git clone"
 
 alias ytf="yt-dlp -F"
 alias ytv="yt-dlp -f22"
@@ -195,6 +199,10 @@ alias ytm="yt-dlp -f140"
 
 alias ym="ddgr -w youtube.com --url-handler=mpva"
 alias ymj="ddgr -w youtube.com -j --url-handler=mpva"
+
+alias qem="kvm -boot d -m 2G -cdrom"
+
+alias dms="dmesg | tail"
 
 # Keybindings
 
@@ -212,6 +220,9 @@ bindkey -s '\eа' '^lfcd^M'
 
 bindkey -s '\ev' '^lfvi^M'
 bindkey -s '\eм' '^lfvi^M'
+
+bindkey -s '\em' '^lfmnt^M'
+bindkey -s '\eь' '^lfmnt^M'
 
 bindkey '^[[1;3A' cdParentKey
 bindkey '^[[1;3D' cdUndoKey
