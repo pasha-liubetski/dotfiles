@@ -1,5 +1,3 @@
-# setopt
-
 setopt autocd
 setopt longlistjobs
 setopt nobeep
@@ -123,6 +121,10 @@ fmnt () {
     cd "$(findmnt -D -o TARGET | tail -n +2 | sort | uniq | fzf)"
 }
 
+gvfscd () {
+    cd "/run/user/$(id -u)/gvfs"
+}
+
 # Aliases
 
 alias rscopy="rsync --human-readable --progress --recursive --links --hard-links --perms --acls --xattrs --owner --group --protect-args"
@@ -203,6 +205,10 @@ alias ymj="ddgr -w youtube.com -j --url-handler=mpva"
 alias qem="kvm -boot d -m 2G -cdrom"
 
 alias dms="dmesg | tail"
+
+alias cnf="command-not-found"
+
+alias pi="ping"
 
 # Keybindings
 
