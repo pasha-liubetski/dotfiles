@@ -1,3 +1,6 @@
+source /usr/share/doc/fzf/examples/key-bindings.zsh
+source /usr/share/doc/fzf/examples/completion.zsh
+
 setopt autocd
 setopt longlistjobs
 setopt nobeep
@@ -8,7 +11,11 @@ export PATH="${PATH}:/sbin:/usr/sbin:/usr/local/sbin:${HOME}/.local/bin"
 export PROMPT='%F{blue}%B%~%b%f %F{green}#%f '
 export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 
-export FZF_DEFAULT_OPTS='-i'
+export FZF_DEFAULT_OPTS='-i --height=100%'
+export MANPAGER="sh -c 'col -bx | batcat -l man -p'"
+export MANROFFOPT="-c"
+
+export FZF_CTRL_T_OPTS="--preview='batcat -n --color always {}'"
 
 # History settings
 
@@ -75,15 +82,6 @@ zle -N edit-command-line
 
 # File manager hotkeys
 
-cdUndoKey() {
-  popd
-  zle       reset-prompt
-  print
-  zle       reset-prompt
-}
-
-zle -N cdUndoKey
-
 cdParentKey() {
   pushd ..
   zle      reset-prompt
@@ -94,6 +92,10 @@ cdParentKey() {
 zle -N cdParentKey
 
 # Functions
+
+help() {
+    "$@" --help 2>&1 | batcat --style=plain --language=help
+}
 
 lfcd () {
     tmp="$(mktemp)"
@@ -109,20 +111,11 @@ lfcd () {
     fi
 }
 
-fcd () {
-    cd "$(fd --type d -H | fzf)"
-}
-
-fvi () {
-    vi "$(fd --type f | fzf)"
-}
-
 fmnt () {
-    cd "$(findmnt -D -o TARGET | tail -n +2 | sort | uniq | fzf)"
-}
+	uid="$(id -u)"
+	fstypes="fuse,fuseblk,ext2,ext3,ext4,vfat,iso9660,udf"
 
-gvfscd () {
-    cd "/run/user/$(id -u)/gvfs"
+	cd "$({ find /run/user/${uid}/gvfs -mindepth 1 -maxdepth 1 -type d; findmnt -n -l -o target -t ${fstypes}; bookmarks.rb } | fzf)"
 }
 
 # Aliases
@@ -131,14 +124,15 @@ alias rscopy="rsync --human-readable --progress --recursive --links --hard-links
 
 alias df="duf -hide special"
 alias h="tldr"
+alias ch="cheat"
 alias ds="du -sh"
 
 alias ls="ls --color=auto"
 alias grep="grep --color=auto"
 
-alias l="exa -a"
-alias ll="exa -l --icons"
-alias b="batcat"
+alias l="eza -a"
+alias ll="eza -lh --icons"
+alias b="batcat --style=plain --color always"
 
 alias t2b="trans -t be"
 alias t2e="trans -t en"
@@ -152,19 +146,29 @@ alias srrf="sudo rm -rf"
 alias ax="aunpack"
 
 alias gi="grep -i"
-alias p="most"
+alias p="batcat --style=plain --color always"
+alias -g P="| p"
 
 alias a2="aria2c"
 
 alias se="sudoedit"
 
-alias add="sudo nice -n 7 eatmydata -- apt install"
-alias del="sudo nice -n 7 eatmydata -- apt purge"
-alias show="apt show"
-alias search="apt search"
+#alias add="sudo nice -n 7 eatmydata -- apt install"
+#alias del="sudo nice -n 7 eatmydata -- apt purge"
+#alias show="apt show"
+#alias search="apt search"
 
-alias pls="apt list"
-alias plsi="apt list -i"
+#alias pls="apt list"
+#alias plsi="apt list -i"
+#alias dls="dpkg -L"
+
+alias add="sudo nice -n 7 eatmydata -- nala install"
+alias del="sudo nice -n 7 eatmydata -- nala purge"
+alias show="nala show"
+alias search="nala search"
+
+alias pls="nala list"
+alias plsi="nala list -i"
 alias dls="dpkg -L"
 
 alias dfe="sudoedit /var/lib/debfoster/keepers"
@@ -172,21 +176,19 @@ alias dfa="sudo debfoster"
 alias dfc="sudo sed -i '/^-/d' /var/lib/debfoster/keepers"
 alias dfn="sudo debfoster --force"
 
+alias rdep="apt-cache rdepends"
+
 alias si="sudo upd"
 
-alias shrm="shred -u"
 alias shrm="sudo shred -u"
-alias mclr="mat2 --inplace"
 
 alias fh="free -h"
 
 alias fd="fdfind"
 alias fdh="fdfind -H"
 
-alias vpnon="warp-cli connect"
-alias vpnoff="warp-cli disconnect"
-
 alias g="/usr/local/bin/nohupgeany.sh"
+alias s="subl"
 
 alias cx="chmod +x"
 alias md="mkdir"
@@ -195,20 +197,38 @@ alias gia="git add -A"
 alias gcm="git commit"
 alias gc="git clone"
 
+alias yt="yt-dlp --continue --file-access-retries infinite --fragment-retries infinite -R infinite"
 alias ytf="yt-dlp -F"
-alias ytv="yt-dlp -f22"
-alias ytm="yt-dlp -f140"
 
-alias ym="ddgr -w youtube.com --url-handler=mpva"
-alias ymj="ddgr -w youtube.com -j --url-handler=mpva"
+alias ytm="ytfzf --audio-only -n 50 -u mpva"
+alias ytdm="yt -f140"
+alias ytdv="yt -f22"
 
-alias qem="kvm -boot d -m 2G -cdrom"
+alias ytrenp="rename -v -n 's/ \[[^]]+\]//' *(mp4|m4a|mp3)"
+alias ytren="rename -v 's/ \[[^]]+\]//' *(mp4|m4a|mp3)"
 
-alias dms="dmesg | tail"
+alias adetoxp="rename -v -n 's/[_-]+/ /g' *(mp4|m4a|mp3)"
+alias adetox="rename -v 's/[_-]+/ /g' *(mp4|m4a|mp3)"
 
 alias cnf="command-not-found"
 
 alias pi="ping"
+alias pi5="ping 192.168.58.5"
+
+alias k9="kill -9"
+alias sk9="sudo kill -9"
+
+alias lsimg="find -type f \( -iname '*png' -o -iname '*jpg' \) | sort | sed 's:^:![](:;s:$:):'"
+
+alias ced="vi ~/.zshrc"
+
+alias s.="s ."
+
+alias dws="sudo dwstop"
+
+alias st="grc stat"
+
+alias m="man"
 
 # Keybindings
 
@@ -218,19 +238,18 @@ bindkey -s '\eд' '^ull^M'
 bindkey -s '\eh' '^ucd^M'
 bindkey -s '\eр' '^ucd^M'
 
-bindkey -s '\ec' '^llfcd^M'
-bindkey -s '\eс' '^llfcd^M'
+bindkey -s '\e/' '^ucd /^M'
+bindkey -s '\e.' '^ucd /^M'
 
-bindkey -s '\ef' '^lfcd^M'
-bindkey -s '\eа' '^lfcd^M'
-
-bindkey -s '\ev' '^lfvi^M'
-bindkey -s '\eм' '^lfvi^M'
+bindkey -s '\ed' '^llfcd^M'
+bindkey -s '\eв' '^llfcd^M'
 
 bindkey -s '\em' '^lfmnt^M'
 bindkey -s '\eь' '^lfmnt^M'
 
-bindkey '^[[1;3A' cdParentKey
-bindkey '^[[1;3D' cdUndoKey
+bindkey -s '\ez' '^lxdg-open .^M'
+bindkey -s '\eя' '^lxdg-open .^M'
 
-bindkey '\ee' edit-command-line
+bindkey '^[[1;3A' cdParentKey
+bindkey -s '^[[1;3D' '^lcd \"$OLDPWD\"^M' 
+

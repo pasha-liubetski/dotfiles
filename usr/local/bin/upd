@@ -1,12 +1,22 @@
 #!/bin/sh
 
-sudo eatmydata -- dpkg --configure -a
-sudo eatmydata -- apt update
-sudo eatmydata -- apt-get -f install
-sudo eatmydata -- apt full-upgrade -y
-sudo eatmydata -- apt clean
-sudo eatmydata -- apt autoremove --purge
+#sudo nice -n 7 eatmydata -- dpkg --configure -a
+#sudo nice -n 7 eatmydata -- apt update
+#sudo nice -n 7 eatmydata -- apt-get -f install
+#sudo nice -n 7 eatmydata -- apt full-upgrade -y
+#sudo nice -n 7 eatmydata -- apt clean
+#sudo nice -n 7 eatmydata -- apt autoremove --purge
+
+sudo nice -n 7 eatmydata -- dpkg --configure -a
+sudo nice -n 7 eatmydata -- apt-get -f install
+sudo nice -n 7 eatmydata -- nala upgrade
+sudo nice -n 7 eatmydata -- nala clean 
+sudo nice -n 7 eatmydata -- nala autopurge 
+
+GREEN='\033[32;1m'
+NOCOLOR='\033[0m'
 
 echo
-echo ":: orphaned packages ::"
+echo "${GREEN}:: orphaned packages ::${NOCOLOR}"
+echo
 deborphan --guess-all

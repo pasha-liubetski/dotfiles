@@ -1,0 +1,3 @@
+#!/bin/sh
+
+kvm -boot d -m 2G -cdrom "$@"
