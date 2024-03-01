@@ -189,6 +189,7 @@ alias fd="fdfind"
 alias fdh="fdfind -H"
 
 alias g="/usr/local/bin/nohupgeany.sh"
+alias nq="/usr/local/bin/nohupnqq.sh"
 alias s="subl"
 
 alias cx="chmod +x"
@@ -252,5 +253,4 @@ bindkey -s '\ez' '^lxdg-open .^M'
 bindkey -s '\eя' '^lxdg-open .^M'
 
 bindkey '^[[1;3A' cdParentKey
-bindkey -s '^[[1;3D' '^lcd \"$OLDPWD\"^M' 
-
+bindkey -s '^[[1;3D' '^lcd -^M' 
