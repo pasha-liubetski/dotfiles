@@ -148,6 +148,7 @@ alias ax="aunpack"
 alias gi="grep -i"
 alias p="batcat --style=plain --color always"
 alias -g P="| p"
+alias -g G="| ug --color=always -i --no-line-number --pager='batcat --style=plain --color always'"
 
 alias a2="aria2c"
 
